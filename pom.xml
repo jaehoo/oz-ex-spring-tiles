@@ -44,7 +44,7 @@
 
       <servlet-api.version>2.5</servlet-api.version>
       <jstl.version>1.2</jstl.version>
-      <struts-tiles>3.0.1</struts-tiles>
+      <struts-tiles>2.1.4</struts-tiles>
 
       <jasperreports.vesrion>4.5.0</jasperreports.vesrion>
       <cxf.version>2.6.0</cxf.version>
@@ -73,6 +73,8 @@
       <mvn.src.version>1.6</mvn.src.version>
       <mvn.target.version>1.6</mvn.target.version>
       <maven.rootBaseDir>${basedir}</maven.rootBaseDir>
+
+
 
 
 
@@ -281,6 +283,20 @@
       </dependency>
 
 
+      <!-- Spring ORM -->
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-tx</artifactId>
+          <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-orm</artifactId>
+          <version>${spring.framework.version}</version>
+      </dependency>
+
+
       <!-- Spring Web -->
 
       <dependency>
@@ -320,4 +336,27 @@
 
 
   </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>jrebel-maven-plugin</artifactId>
+                <configuration>
+                    <packaging>war</packaging>
+                    <alwaysGenerate>true</alwaysGenerate>
+                    <showGenerated>false</showGenerated>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-rebel-xml</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

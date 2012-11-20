@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--
+       @author: Lic. José Alberto Sánchez González
+       twitter: @jaehoox
+       mail: jaehoo@gmail.com
+   -->
+
+    <!-- identify Annonated Classes -->
+    <mvc:annotation-driven />
+
+    <!-- MVC resources-->
+    <!-- <mvc:resources mapping="/images/**" location="/images/"/>-->
+
+     <context:annotation-config />
+     <context:component-scan base-package="com.oz.controller" />
+
+    <!--
+        *****************
+        Handler Mappings
+        *****************
+    -->
+
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"
+          p:mappings-ref="simple.request.mappings" />
+
+    <util:map id="simple.request.mappings">
+
+        <entry key="hello.html" value-ref="c.hello" />
+        <!-- <entry key="/test/intlForm.html" value-ref="c.testINTL"/>
+                <entry key="/test/ResponseText.html" value-ref="urlFilenameViewController"/>
+                <entry key="/testINTL/processIntlText.html" value-ref="c.testINTL"/>
+                <entry key="/testINTL/processIntlText2.html" value-ref="c.testINTL"/>
+                <entry key="/testINTL/processJsonText.html" value-ref="c.testINTL"/>
+                <entry key="/testINTL/processRespINTL.html" value-ref="c.testINTL"/>
+        -->
+    </util:map>
+
+    <!--
+        *****************
+        View Resolvers
+        *****************
+    -->
+
+    <!-- Resolve views from resource file (views.properties) -->
+    <!-- <bean id="resourceViewResolver"
+          class="org.springframework.web.servlet.view.ResourceBundleViewResolver"
+          p:basename="views" /> -->
+
+    <!-- Convenience subclass of UrlBasedViewResolver that supports TilesView (i.e. Tiles definitions) and custom subclasses of it. -->
+    <!-- Don't forget to set the order if you declared other ViewResolvers -->
+    <!-- See http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/web/servlet/view/tiles2/TilesViewResolver.html  -->
+    <bean id="tilesviewResolver" p:order="0"
+          class="org.springframework.web.servlet.view.tiles2.TilesViewResolver" />
+
+    <bean id="tilesConfigurer"
+          class="org.springframework.web.servlet.view.tiles2.TilesConfigurer"
+          p:definitions-ref="tiles-definitions" />
+
+    <util:list id="tiles-definitions">
+        <value>classpath:tiles-defs.xml</value>
+    </util:list>
+
+
+    <!--
+         Manual Config to TilesView Resolver, can mapping view name with tile name to be invoked.
+    -->
+
+    <!--<bean id="urlTilesViewResolver" p:order="0"
+          class="org.springframework.web.servlet.view.UrlBasedViewResolver"
+            p:viewClass="org.springframework.web.servlet.view.tiles2.TilesView"
+            p:attributesMap-ref="tileViewNamesMappings"
+            p:viewNames-ref="tileViewNamesMappings"/>
+
+    <util:map id="tileViewNamesMappings">
+        <entry key="welcomeView" value="welcomeView" />
+        <entry key="helloView" value="helloView" />
+    </util:map>                           -->
+
+
+    <!-- JSP View Resolver -->
+    <bean id="JspViewResolver" p:order="1"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:viewClass="org.springframework.web.servlet.view.JstlView"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp" />
+
+    <!--  interprets a request parameter as the name of the method that is to be invoked.
+
+        http://static.springsource.org/spring/docs/3.0.0.M3/reference/html/ch16s03.html
+    -->
+    <!--<bean id="ParamMethodNameResolver"
+          class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver"
+          p:paramName="method" />-->
+
+    <!--p:logicalMappings-ref="logical.mappings"-->
+    <!--<util:map id="logical.mappings">
+        <entry key="hello.html" value="helloAction" />
+        <entry key="hello" value="helloAction" />
+    </util:map>-->
+
+
+    <bean id="urlFilenameViewController"
+          class="org.springframework.web.servlet.mvc.UrlFilenameViewController"/>
+
+    <!-- interprets a request url as the name of the method that is to be invoked. -->
+
+    <bean id="propertiesMethodResolver"
+          class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver"
+            p:mappings-ref="mappings.methodResolver"/>
+
+    <util:map id="mappings.methodResolver">
+               <entry key="/hello.html" value="helloAction"/>
+    </util:map>
+
+    <!--
+        *****************
+        Controllers
+        *****************
+    -->
+
+    <bean id="c.hello"
+          class="com.oz.controller.HelloWorldController"
+          p:methodNameResolver-ref="propertiesMethodResolver"/>
+
+</beans>
